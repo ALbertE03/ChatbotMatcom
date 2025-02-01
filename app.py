@@ -6,7 +6,7 @@ import os
 import json
 import numpy as np
 
-os.environ["STREAMLIT_SECRETS_PATH"] = "../front.streamlit/secrets.toml"
+os.environ["STREAMLIT_SECRETS_PATH"] = ".streamlit/secrets.toml"
 
 
 class Embedder:

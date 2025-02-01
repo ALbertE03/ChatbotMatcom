@@ -3,7 +3,6 @@ import random
 import time
 import requests
 import os
-import streamlit as st
 import json
 import numpy as np
 
@@ -67,7 +66,7 @@ class Embedder:
             "dimensions": 768,
         }
         headers = {
-            "Authorization": "Bearer fw_3ZR81bUKaAkvohmKYAmgycJg",
+            "Authorization": f"Bearer {os.getenv("Token")}",
             "Content-Type": "application/json",
         }
 
@@ -221,14 +220,13 @@ class Chat:
         }
         self.model = model
         if api_key is None:
-            api_key = os.getenv(os.getenv("Token"))
-        self.url = "https://api.fireworks.ai/inference/v1/chat/completions"
-        """self.e = Embedder(
+            api_key = os.getenv("Token")
+        self.e = Embedder(
             "MarkdownFile.md",
             chunk_size=10000,
             output_dir="output",
             output_prefix="chunk",
-        )"""
+        )
 
     def run(self, context, input, history):
         with open("prompts.json", encoding="utf-8") as f:
@@ -236,9 +234,9 @@ class Chat:
 
         k = 3
         context = ""
-        """top_indices, top_scores, top_file_names = self.e.query_top_k(input, k=k)
+        top_indices, top_scores, top_file_names = self.e.query_top_k(input, k=k)
         for idx, score, fname in zip(top_indices, top_scores, top_file_names):
-            context.join(self.e.file_contents(fname))"""
+            context += "\n\n".join(self.e.file_contents(fname))
 
         promt_template = (
             f"{input}"
@@ -263,12 +261,12 @@ class Chat:
         response = requests.request(
             "POST", self.url, json=payload, headers=self.headers
         )
-        print(json.loads(response.text))
+
         return json.loads(response.text)
 
 
 if __name__ == "__main__":
-    chat = Chat("accounts/fireworks/models/llama-v2-70b-chat", os.getenv("Token"))
+    chat = Chat("accounts/fireworks/models/llama-v3p3-70b-instruct", os.getenv("Token"))
     while True:
         texto = input("")
         print(chat.run("", texto, [])["choices"][0]["message"])

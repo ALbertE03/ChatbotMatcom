@@ -6,6 +6,8 @@ import os
 import json
 import numpy as np
 
+os.environ["STREAMLIT_SECRETS_PATH"] = "../front.streamlit/secrets.toml"
+
 
 class Embedder:
     def __init__(
@@ -229,7 +231,7 @@ class Chat:
         )
 
     def run(self, context, input, history):
-        with open("prompts.json", encoding="utf-8") as f:
+        with open("../prompts.json", encoding="utf-8") as f:
             data = json.load(f)
 
         k = 3
@@ -266,7 +268,8 @@ class Chat:
 
 
 if __name__ == "__main__":
-    chat = Chat("accounts/fireworks/models/llama-v3p3-70b-instruct", os.getenv("Token"))
+    api_key = st.secrets["api_keys"]["my_api_key"]
+    chat = Chat("accounts/fireworks/models/llama-v3p3-70b-instruct", api_key)
     while True:
         texto = input("")
         print(chat.run("", texto, [])["choices"][0]["message"])

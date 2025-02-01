@@ -68,7 +68,7 @@ class Embedder:
             "dimensions": 768,
         }
         headers = {
-            "Authorization": f"Bearer {os.getenv("Token")}",
+            "Authorization": f"Bearer {st.secrets["api_keys"]["my_api_key"]}",
             "Content-Type": "application/json",
         }
 
@@ -217,12 +217,11 @@ class Embedder:
 class Chat:
     def __init__(self, model, api_key=None):
         self.headers = {
-            "Authorization": f"Bearer {os.getenv("Token")}",
+            "Authorization": f"Bearer {st.secrets["api_keys"]["my_api_key"]}",
             "Content-Type": "application/json",
         }
         self.model = model
-        if api_key is None:
-            api_key = os.getenv("Token")
+        self.url = "https://api.fireworks.ai/inference/v1/chat/completions"
         self.e = Embedder(
             "MarkdownFile.md",
             chunk_size=10000,
@@ -230,8 +229,8 @@ class Chat:
             output_prefix="chunk",
         )
 
-    def run(self, context, input, history):
-        with open("../prompts.json", encoding="utf-8") as f:
+    def run(self, input, history):
+        with open("prompts.json", encoding="utf-8") as f:
             data = json.load(f)
 
         k = 3
@@ -263,13 +262,4 @@ class Chat:
         response = requests.request(
             "POST", self.url, json=payload, headers=self.headers
         )
-
         return json.loads(response.text)
-
-
-if __name__ == "__main__":
-    api_key = st.secrets["api_keys"]["my_api_key"]
-    chat = Chat("accounts/fireworks/models/llama-v3p3-70b-instruct", api_key)
-    while True:
-        texto = input("")
-        print(chat.run("", texto, [])["choices"][0]["message"])

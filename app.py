@@ -6,8 +6,6 @@ import os
 import json
 import numpy as np
 
-os.environ["STREAMLIT_SECRETS_PATH"] = "../front.streamlit/secrets.toml"
-
 
 class Embedder:
     def __init__(
@@ -68,7 +66,7 @@ class Embedder:
             "dimensions": 768,
         }
         headers = {
-            "Authorization": f"Bearer {st.secrets["api_keys"]["my_api_key"]}",
+            "Authorization": f"Bearer {st.secrets['api_keys']['my_api_key']}",
             "Content-Type": "application/json",
         }
 
@@ -217,7 +215,7 @@ class Embedder:
 class Chat:
     def __init__(self, model, api_key=None):
         self.headers = {
-            "Authorization": f"Bearer {st.secrets["api_keys"]["my_api_key"]}",
+            "Authorization": f"Bearer {st.secrets['api_keys']['my_api_key']}",
             "Content-Type": "application/json",
         }
         self.model = model

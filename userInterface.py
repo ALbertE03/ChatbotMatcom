@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_chat import message
-from app import Chat
+from chat import Chat
 
 
 if "chat_instance" not in st.session_state:
@@ -16,10 +16,12 @@ if "user_chat" not in st.session_state:
 if "bot_chat" not in st.session_state:
     st.session_state.bot_chat = []
 
+
 def extract_content(bot_response):
-    
+
     content = bot_response["choices"][0]["message"]["content"]
     return content
+
 
 def generar_interfaz(nombre):
     st.header(f"{nombre}")
@@ -40,6 +42,7 @@ def generar_interfaz(nombre):
             bot_content = extract_content(st.session_state.bot_chat[i])
             message(bot_content, is_user=False, key=f"bot_{i}")
 
+
 def main():
     st.title("Bienvenido a su asistente virtual")
     st.markdown("---")
@@ -53,6 +56,7 @@ def main():
 
     elif option == "Asistente Jurídico":
         generar_interfaz("Asistente Jurídico")
+
 
 if __name__ == "__main__":
     main()

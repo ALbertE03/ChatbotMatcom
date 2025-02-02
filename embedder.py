@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import numpy as np
+import streamlit as st
 
 
 class Embedder:
@@ -63,7 +64,7 @@ class Embedder:
             "dimensions": 768,
         }
         headers = {
-            "Authorization": "Bearer fw_3ZR81bUKaAkvohmKYAmgycJg",
+            "Authorization": f"Bearer {st.secrets['api_keys']['my_api_key']}",
             "Content-Type": "application/json",
         }
 
@@ -207,33 +208,3 @@ class Embedder:
             print(f"El archivo '{file_path}' no se encontró.")
         except Exception as e:
             print(f"Ocurrió un error al leer el archivo: {e}")
-
-
-# ========================
-# Ejemplo de uso
-# ========================
-if __name__ == "__main__":
-    md_file_path = "MarkdownFile.md"  # Reemplaza con la ruta de tu archivo Markdown
-    try:
-        embedder = Embedder(
-            md_file_path,
-            chunk_size=10000,
-            output_dir="output",
-            output_prefix="chunk",
-        )
-    except Exception as e:
-        print(e)
-        exit(1)
-
-    # Texto de consulta
-    input_text = "Cuales son las carreras mas populares en la universidad de la habana y por que?"
-    k = 3  # Número de resultados a obtener
-
-    try:
-        top_indices, top_scores, top_file_names = embedder.query_top_k(input_text, k=k)
-        print(f"\nTop {k} similar chunks for the input text:")
-        for idx, score, fname in zip(top_indices, top_scores, top_file_names):
-            print(f"\nIndex: {idx}, Score: {score:.4f}, File: {fname}")
-            Embedder.file_contents(fname)
-    except Exception as e:
-        print("Error during similarity search:", e)
